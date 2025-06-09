@@ -9,31 +9,31 @@ const swaggerSpecs = require('./swagger/swagger');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB
+
 connectDB();
 
-// Middleware
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware
+
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
     next();
 });
 
-// Swagger UI setup
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
     explorer: true,
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: "User Registration API Documentation"
 }));
 
-// Routes
+
 app.use('/api/auth', authRoutes);
 
-// Root endpoint
+
 app.get('/', (req, res) => {
     res.json({
         message: 'Welcome to User Registration API',
@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
     });
 });
 
-// Health check endpoint
+
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
@@ -54,7 +54,7 @@ app.get('/health', (req, res) => {
     });
 });
 
-// 404 handler
+
 app.use('*', (req, res) => {
     res.status(404).json({
         success: false,
@@ -63,7 +63,7 @@ app.use('*', (req, res) => {
     });
 });
 
-// Global error handler
+
 app.use((error, req, res, next) => {
     console.error('Global error handler:', error);
     
@@ -74,7 +74,7 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Graceful shutdown
+
 process.on('SIGTERM', () => {
     console.log('SIGTERM received. Shutting down gracefully.');
     process.exit(0);
